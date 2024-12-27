@@ -1,16 +1,23 @@
 const Order = require('../../../models/order');
 
 const getAll = async(req, res) => {
-    const orders = await Order.find();
-    res.json({
-        "status": "success",
-        "data": {
-            "orders": orders
-        }
-    })
+    try {
+        const orders = await Order.find();
+        res.json({
+            "status": "success",
+            "data": {
+                "orders": orders
+            }
+        })    
+    } catch (error) {
+        res.status(500).json({
+            "status": "error",
+            "message": error.message
+        })
+    }
 }
 
-const create = (req, res) => {
+const create = async (req, res) => {
     let order = new Order();
     order.name = req.body.name;
     order.email = req.body.email;
@@ -21,14 +28,20 @@ const create = (req, res) => {
     order.total = req.body.total;
     order.status = req.body.status;
 
-    order.save().then(order => {
+    try {
+        order = await order.save();
         res.json({
             "status": "success",
             "data": {
                 "order": order
             }
         })
-    });
+    } catch (error) {
+        res.status(500).json({
+            "status": "error",
+            "message": error.message
+        })
+    }
 }
 
 const getOne = async (req, res) => {
