@@ -64,22 +64,65 @@ const getOne = async (req, res) => {
     })
 }
 
-const update = (req, res) => {
-    res.json({
-        "status": "success",
-        "data": {
-            "order": {}
+const update = async (req, res) => {
+    try {
+        const updatedOrder = await Order.findByIdAndUpdate(req.params.id, {
+            name: req.body.name,
+            email: req.body.email,
+            address: req.body.address,
+            city: req.body.city,
+            state: req.body.state,
+            items: req.body.items,
+            total: req.body.total,
+            status: req.body.status
+        }, { new: true });
+
+        if(!updatedOrder) {
+            return res.status(404).json({
+                "status": "error",
+                "message": "Order not found"
+            });
         }
-    })
+        if (updatedOrder) {
+            res.json({
+                "status": "success",
+                "data": {
+                    "order": updatedOrder
+                }
+            })
+        }
+    } catch (error) {
+        res.status(500).json({
+            "status": "error",
+            "message": error.message
+        })
+    }
 }
 
-const destroy = (req, res) => {
-    res.json({
-        "status": "success",
-        "data": {
-            "order": {}
+const destroy = async (req, res) => {
+    try {
+        const deletedOrder = await Order.findByIdAndDelete(req.params.id);
+
+        if(!deletedOrder) {
+            return res.status(404).json({
+                "status": "error",
+                "message": "Order not found"
+            });
         }
-    })
+        if (deletedOrder) {
+            res.json({
+                "status": "success",
+                "data": {
+                    "order": deletedOrder
+                }
+            })
+        }
+    } catch (error) {
+        res.status(500).json({
+            "status": "error",
+            "message": error.message
+        })
+    }
 }
 
 module.exports = {
