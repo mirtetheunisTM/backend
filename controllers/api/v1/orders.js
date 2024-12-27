@@ -1,10 +1,11 @@
 const Order = require('../../../models/order');
 
-const getAll = (req, res) => {
+const getAll = async(req, res) => {
+    const orders = await Order.find();
     res.json({
         "status": "success",
         "data": {
-            "orders": []
+            "orders": orders
         }
     })
 }
@@ -30,7 +31,31 @@ const create = (req, res) => {
     });
 }
 
-const getOne = (req, res) => {
+const getOne = async (req, res) => {
+    try {
+        const order = await Order.findById(req.params.id);
+        
+        if(!order) {
+            return res.status(404).json({
+                "status": "error",
+                "message": "Order not found"
+            });
+        }
+        if (order) {
+            res.json({
+                "status": "success",
+                "data": {
+                    "order": order
+                }
+            })
+        }
+    } catch (error) {
+        res.status(500).json({
+            "status": "error",
+            "message": error.message
+        })
+    }
+
     res.json({
         "status": "success",
         "data": {
