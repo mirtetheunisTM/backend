@@ -68,13 +68,6 @@ const getOne = async (req, res) => {
             "message": error.message
         })
     }
-
-    res.json({
-        "status": "success",
-        "data": {
-            "order": {}
-        }
-    })
 }
 
 const update = async (req, res) => {

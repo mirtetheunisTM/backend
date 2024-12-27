@@ -10,8 +10,11 @@ const ordersRouter = require('./routes/api/v1/orders');
 
 const mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost:27017/op-backend');
+const cors = require('cors');
 
 const app = express();
+
+app.use(cors());
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
