@@ -8,6 +8,9 @@ const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const ordersRouter = require('./routes/api/v1/orders');
 
+const mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost:27017/op-backend');
+
 const app = express();
 
 // view engine setup

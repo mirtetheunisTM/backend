@@ -1,3 +1,5 @@
+const Order = require('../../../models/order');
+
 const getAll = (req, res) => {
     res.json({
         "status": "success",
@@ -8,12 +10,24 @@ const getAll = (req, res) => {
 }
 
 const create = (req, res) => {
-    res.json({
-        "status": "success",
-        "data": {
-            "order": {}
-        }
-    })
+    let order = new Order();
+    order.name = req.body.name;
+    order.email = req.body.email;
+    order.address = req.body.address;
+    order.city = req.body.city;
+    order.state = req.body.state;
+    order.items = req.body.items;
+    order.total = req.body.total;
+    order.status = req.body.status;
+
+    order.save().then(order => {
+        res.json({
+            "status": "success",
+            "data": {
+                "order": order
+            }
+        })
+    });
 }
 
 const getOne = (req, res) => {
