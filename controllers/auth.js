@@ -19,23 +19,46 @@ const signup = async (req, res, next) => {
     }
 };
 
+const { promisify } = require('util');
+
 const login = async (req, res, next) => {
     try {
-        const user = await User.authenticate(req.body.username, req.body.password);
-        res.json({
-            "status": "success",
-            "data": {
-                "user": user
+        const { username, password } = req.body;
+
+        User.authenticate()(username, password, (err, user, info) => {
+            if (err) {
+                return res.status(500).json({
+                    status: "error",
+                    message: "An error occurred during authentication",
+                });
             }
-        })
+
+            if (!user) {
+                return res.status(401).json({
+                    status: "fail",
+                    message: info.message || "Invalid username or password",
+                });
+            }
+
+            res.json({
+                status: "success",
+                data: {
+                    user: {
+                        id: user._id,
+                        username: user.username,
+                    },
+                },
+            });
+        });
     } catch (error) {
         res.status(500).json({
-            "status": "error",
-            "message": error.message
-        })
+            status: "error",
+            message: error.message,
+        });
     }
+};
 
-}
+
 
 module.exports = {
     signup,
