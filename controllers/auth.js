@@ -60,9 +60,64 @@ const login = async (req, res, next) => {
     }
 };
 
+const logout = async (req, res, next) => {
+    try {
+        res.json({
+            "status": "success",
+            "message": "Logged out successfully"
+        })
+    } catch (error) {
+        res.status(500).json({
+            "status": "error",
+            "message": error.message
+        })
+    }
+};
+
+const changePassword = async (req, res, next) => {
+    try {
+        const { oldPassword, newPassword } = req.body;
+
+        if (!req.user) {
+            return res.status(401).json({
+                status: 'fail',
+                message: 'Unauthorized',
+            });
+        }
+
+        const user = await User.findById(req.user._id);
+        if (!user) {
+            return res.status(404).json({
+                status: 'fail',
+                message: 'User not found',
+            });
+        }
+
+        user.changePassword(oldPassword, newPassword, (err) => {
+            if (err) {
+                return res.status(400).json({
+                    status: 'fail',
+                    message: 'Incorrect old password',
+                });
+            }
+
+            res.json({
+                status: 'success',
+                message: 'Password changed successfully',
+            });
+        });
+    } catch (error) {
+        res.status(500).json({
+            status: 'error',
+            message: error.message,
+        });
+    }
+};
 
 
 module.exports = {
     signup,
-    login
+    login,
+    logout,
+    changePassword
 }
