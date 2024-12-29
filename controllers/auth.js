@@ -1,5 +1,5 @@
 const User = require('../models/User');
-const passport = require('../passport/passport');
+const jwt = require('jsonwebtoken');
 
 const signup = async (req, res, next) => {
     try {
@@ -28,32 +28,34 @@ const login = async (req, res, next) => {
         User.authenticate()(username, password, (err, user, info) => {
             if (err) {
                 return res.status(500).json({
-                    status: "error",
-                    message: "An error occurred during authentication",
+                    "status": "error",
+                    "message": err.message,
                 });
             }
 
             if (!user) {
                 return res.status(401).json({
-                    status: "fail",
-                    message: info.message || "Invalid username or password",
+                    "status": "fail",
+                    "message": info.message || "Invalid username or password",
                 });
             }
 
+            let token = jwt.sign({
+                uid: user._id,
+                username: user.username
+            }, "MyVerySecretKey");
+
             res.json({
-                status: "success",
-                data: {
-                    user: {
-                        id: user._id,
-                        username: user.username,
-                    },
+                "statusj": "success",
+                "data": {
+                    "token": token
                 },
             });
         });
     } catch (error) {
         res.status(500).json({
-            status: "error",
-            message: error.message,
+            "status": "error",
+            "message": error.message,
         });
     }
 };
