@@ -2,18 +2,41 @@ const Order = require('../../../models/order');
 
 const getAll = async(req, res) => {
     try {
-        const orders = await Order.find();
+        const { sort, order = 'asc', name, status } = req.query;
+
+        // Base query
+        let query = {};
+
+        // Add filters
+        if (name) {
+            query.name = { $regex: name, $options: 'i' }; // Case-insensitive regex for name
+        }
+        if (status) {
+            query.status = status; // Exact match for status
+        }
+
+        // Add sorting
+        let sortOption = {};
+        if (sort) {
+            const sortField = sort === 'date' ? 'date' : 'name'; // Allowed fields to sort
+            const sortOrder = order === 'desc' ? -1 : 1; // Sort direction
+            sortOption[sortField] = sortOrder;
+        }
+
+        // Execute query with sorting
+        const orders = await Order.find(query).sort(sortOption);
+
         res.json({
-            "status": "success",
-            "data": {
-                "orders": orders
-            }
-        })    
-    } catch (error) {
+            status: 'success',
+            data: {
+                orders,
+            },
+        });
+    } catch (err) {
         res.status(500).json({
-            "status": "error",
-            "message": error.message
-        })
+            status: 'error',
+            message: err.message,
+        });
     }
 }
 
