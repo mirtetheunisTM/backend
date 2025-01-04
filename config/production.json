@@ -1,0 +1,8 @@
+{
+    "Database": {
+        "url": "mongodb+srv://admin01:dIyrDdGdqcXzNFF7@cluster0.9zsrt.mongodb.net/"
+    },
+    "jwt": {
+        "secret": "MyVerySecretKey"
+    }
+}
