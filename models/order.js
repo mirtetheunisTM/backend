@@ -4,10 +4,13 @@ const orderSchema = new mongoose.Schema({
     name: String,
     email: String,
     address: String,
-    city: String,
-    state: String,
-    items: Array,
-    total: Number,
+    country: String,
+    product: {
+        type: Map,
+        of: String,
+        default: {}
+    },
+    totalPrice: Number,
     status: { 
         type: String, 
         enum: ['in productie', 'verzonden', 'geleverd', 'geannuleerd', 'teruggestuurd'],
