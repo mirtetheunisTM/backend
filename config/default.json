@@ -1,0 +1,8 @@
+{
+    "Database": {
+        "url": "mongodb://localhost:27017/op-backend"
+    },
+    "jwt": {
+        "secret": "MyVerySecretKey"
+    }
+}
