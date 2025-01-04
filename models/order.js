@@ -5,12 +5,12 @@ const orderSchema = new mongoose.Schema({
     email: String,
     address: String,
     country: String,
+    totalPrice: Number,
     product: {
         type: Map,
         of: String,
         default: {}
     },
-    totalPrice: Number,
     status: { 
         type: String, 
         enum: ['in productie', 'verzonden', 'geleverd', 'geannuleerd', 'teruggestuurd'],

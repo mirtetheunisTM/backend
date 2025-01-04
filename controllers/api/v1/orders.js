@@ -45,10 +45,9 @@ const create = async (req, res) => {
     order.name = req.body.name;
     order.email = req.body.email;
     order.address = req.body.address;
-    order.city = req.body.city;
-    order.state = req.body.state;
-    order.items = req.body.items;
-    order.total = req.body.total;
+    order.country = req.body.country;
+    order.product = req.body.product;
+    order.totalPrice = req.body.totalPrice;
     order.status = req.body.status;
 
     try {
