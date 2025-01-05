@@ -1,28 +1,47 @@
 const Primus = require('primus');
 
+let primus;
+
 // Start Primus
 let go = (server) => {
-    let primus = new Primus(server, { transformer: 'websockets' });
+    primus = new Primus(server, { transformer: 'websockets' });
 
     // Handle new connections
     primus.on('connection', (spark) => {
         console.log('New spark connected:', spark.id);
 
-        // Example: Listen for data from a client
-        spark.on('data', (data) => {
-            console.log(`Received data from ${spark.id}:`, data);
+        spark.on('order-added', (order) => {
+            primus.write({ event: 'order-added', data: order });
+        });
 
-            // Broadcast the data to all other connected clients
-            primus.write(data);
+        spark.on('order-deleted', (orderId) => {
+            primus.write({ event: 'order-deleted', data: { orderId } });
+        });
+
+        spark.on('order-updated', (updatedOrder) => {
+            primus.write({ event: 'order-updated', data: updatedOrder });
         });
 
         // Handle disconnections
         spark.on('end', () => {
             console.log(`Spark disconnected: ${spark.id}`);
         });
+
+        primus.options.parser = 'json';
+        primus.options.cors = {
+            credentials: true,
+            origin: 'http://localhost:5173', // Frontend URL
+        };
     });
 
     return primus;
 };
 
-module.exports = { go };
+const getPrimus = () => {
+    if (!primus) {
+        throw new Error('Primus has not been initialized. Call `go` first.');
+    }
+    return primus;
+};
+
+module.exports = { go, getPrimus };

@@ -1,4 +1,5 @@
 const Order = require('../../../models/order');
+const { getPrimus } = require('../../../primus/primus');
 
 const getAll = async(req, res) => {
     try {
@@ -52,6 +53,13 @@ const create = async (req, res) => {
 
     try {
         order = await order.save();
+        const primus = getPrimus();
+        primus.forEach((spark) => {
+            spark.write({
+              event: 'order-added',
+              data: order,
+            });
+          });
         res.json({
             "status": "success",
             "data": {
@@ -112,6 +120,13 @@ const update = async (req, res) => {
             });
         }
         if (updatedOrder) {
+            const primus = getPrimus();
+            primus.forEach((spark) => {
+                spark.write({
+                  event: 'order-updated',
+                  data: updatedOrder,
+                });
+              });
             res.json({
                 "status": "success",
                 "data": {
@@ -138,6 +153,15 @@ const destroy = async (req, res) => {
             });
         }
         if (deletedOrder) {
+            const primus = getPrimus();
+            primus.forEach((spark) => {
+                spark.write({
+                  event: 'order-deleted',
+                  data: {
+                    orderId: req.params.id,
+                  },
+                });
+              });
             res.json({
                 "status": "success",
                 "data": {
