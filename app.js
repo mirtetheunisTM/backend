@@ -11,6 +11,7 @@ const ordersRouter = require('./routes/api/v1/orders');
 
 const mongoose = require('mongoose');
 mongoose.connect(config.get('Database.url'));
+console.log(process.env.DATABASE_URL);
 console.log(config.get('Database.url'));
 const cors = require('cors');
 

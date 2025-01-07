@@ -1,6 +1,6 @@
 {
     "Database": {
-        "url": "${DATABASE_URL}"
+        "url": "_ENV_DATABASE_URL"
     },
     "jwt": {
         "secret": "MyVerySecretKey"
