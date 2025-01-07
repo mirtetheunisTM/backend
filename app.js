@@ -12,20 +12,8 @@ const ordersRouter = require('./routes/api/v1/orders');
 const mongoose = require('mongoose');
 
 const databaseUrl = process.env.DATABASE_URL || config.Database.url;
-
-const finalConfig = {
-    ...config,
-    Database: {
-        ...config.Database,
-        url: databaseUrl,
-    },
-};
-
-// Use `finalConfig` in your application
-console.log(finalConfig.Database.url); // Outputs the resolved DATABASE_URL
-
-mongoose.connect(config.get('Database.url'));
-console.log(config.get('Database.url'));
+console.log("Database URL: " + databaseUrl);
+mongoose.connect(databaseUrl);
 const cors = require('cors');
 
 const app = express();
